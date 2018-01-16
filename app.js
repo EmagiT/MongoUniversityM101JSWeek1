@@ -12,10 +12,13 @@ app.set('views', __dirname + '/views');
 
 MongoClient.connect('mongodb://localhost:27017/video', function (err, db) {
 
-
+    assert.equal(null, err);
     //route handler for route
     app.get('/', function (req, res) {
-        res.render('Hello', { 'name': 'Templates' });
+
+        db.collection('movies').find({}).toArray(function (err, docs) {
+            res.render('movies', { 'movies': docs });
+        })
     })
 
 
@@ -24,9 +27,10 @@ MongoClient.connect('mongodb://localhost:27017/video', function (err, db) {
         res.sendStatus(404);
     })
 
+    var server = app.listen(3000, function () {
+        var port = server.address().port;
+        console.log('Express Server Listening on port %s', port);
+    })
 
-})
-var server = app.listen(3000, function () {
-    var port = server.address().port;
-    console.log('Express Server Listening on port %s', port);
+
 })
